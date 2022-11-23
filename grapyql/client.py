@@ -8,14 +8,16 @@ class GqlClient:
 
     def _value_py_to_js(self, value):
         if isinstance(value, str):
-            return f"\"{value}\""
+            return f'"{value}"'
         elif isinstance(value, bool):
             return f"{str(value).lower()}"
         elif value is None:
             return "null"
         raise ValueError(f"Value not supported: `{value}`")
 
-    def dict_to_query(self, query_struct: dict, query_var: dict = None, force_typing: bool = False) -> str:
+    def dict_to_query(
+        self, query_struct: dict, query_var: dict = None, force_typing: bool = False
+    ) -> str:
         """
         Convert a dictionary structure to a GraphQL Query
 
@@ -77,7 +79,9 @@ class GqlClient:
             output = output[:-1] + "\n}"
         return output
 
-    def query(self, query: str = "", return_dict: bool = True, raise_on_error: bool = True):
+    def query(
+        self, query: str = "", return_dict: bool = True, raise_on_error: bool = True
+    ):
         """
         Perform the specified query.
 

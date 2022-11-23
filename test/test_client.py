@@ -16,16 +16,16 @@ class TestGqlClientDictToQuery:
                             "street2": str,
                             "city": str,
                             "state": str,
-                            "zipcode": int
+                            "zipcode": int,
                         },
                         "items": {
                             "display_name": str,
                             "sku": str,
-                        }
-                    }
+                        },
+                    },
                 }
             },
-            query_var={"user_id": "130897273"}
+            query_var={"user_id": "130897273"},
         )
         assert '(user_id: "130897273")' in query
 
@@ -43,16 +43,16 @@ class TestGqlClientDictToQuery:
                             "street2": str,
                             "city": str,
                             "state": str,
-                            "zipcode": int
+                            "zipcode": int,
                         },
                         "items": {
                             "display_name": str,
                             "sku": str,
-                        }
-                    }
+                        },
+                    },
                 }
             },
-            query_var={"user_id": "130897273", "active": True}
+            query_var={"user_id": "130897273", "active": True},
         )
         assert '(user_id: "130897273", active: true)' in query
 
@@ -65,41 +65,41 @@ class TestGqlClientDictToQuery:
                     "fname": str,
                     "invoice": {
                         "cost": str,
-                        "address":{
+                        "address": {
                             "street1": str,
                             "street2": str,
                             "city": str,
                             "state": str,
-                            "zipcode": int
+                            "zipcode": int,
                         },
                         "items": {
                             "display_name": str,
                             "sku": str,
-                        }
-                    }
+                        },
+                    },
                 }
             },
-            query_var={"user_id": "130897273"}
+            query_var={"user_id": "130897273"},
         )
-        assert query ==(
-            '{\n'
+        assert query == (
+            "{\n"
             '  user(user_id: "130897273") {\n'
-            '    active\n'
-            '    fname\n'
-            '    invoice {\n'
-            '      cost\n'
-            '      address {\n'
-            '        street1\n'
-            '        street2\n'
-            '        city\n'
-            '        state\n'
-            '        zipcode\n'
-            '        }\n'
-            '      items {\n'
-            '        display_name\n'
-            '        sku\n'
-            '        }\n'
-            '      }\n'
-            '    }\n'
-            '}'
+            "    active\n"
+            "    fname\n"
+            "    invoice {\n"
+            "      cost\n"
+            "      address {\n"
+            "        street1\n"
+            "        street2\n"
+            "        city\n"
+            "        state\n"
+            "        zipcode\n"
+            "        }\n"
+            "      items {\n"
+            "        display_name\n"
+            "        sku\n"
+            "        }\n"
+            "      }\n"
+            "    }\n"
+            "}"
         )
