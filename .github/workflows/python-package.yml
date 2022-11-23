@@ -11,7 +11,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -30,6 +29,12 @@ jobs:
         python -m pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
+    - name: Black
+      uses: psf/black@stable
+      with:
+        options: "--check --verbose"
+        src: "."
+        version: "~= 22.0"
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
