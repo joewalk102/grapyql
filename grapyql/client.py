@@ -37,13 +37,13 @@ class GqlClient:
             "fname": str,
             "invoice": {
               "cost": str,
-              "address"{
+              "address":{
                 "street1": str,
                 "street2": str,
                 "city": str,
                 "state": str,
                 "zipcode": int
-              }
+              },
               "items": {
                 "display_name": str,
                 "sku": str,
