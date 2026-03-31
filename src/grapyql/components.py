@@ -161,6 +161,8 @@ class GqlObject:
             return "true" if value else "false"
         if isinstance(value, int):
             return str(value)
+        if value is None:
+            return "null"
         return f'"{value}"'
 
     def to_gql(self, _curr_ind=0):

@@ -5,7 +5,6 @@ import requests
 from grapyql import Query, Mutation
 from grapyql.errors import PayloadVerificationError
 
-
 log = logging.getLogger("grapyql.client")
 
 
