@@ -1,6 +1,6 @@
 from copy import deepcopy
 
-from grapyql.client import GqlClient
+from grapyql.old_client import GqlClient
 
 
 class TestGqlClientDictToQuery:
