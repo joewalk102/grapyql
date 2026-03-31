@@ -28,8 +28,8 @@ __all__ = ["Query", "Mutation"]
 class RootOperation:
     _OP_TYPE = None
 
-    def to_gql(self, minified=False):
-        pass
+    def __init__(self, base):
+        self._base = base
 
     def verify_response(self, response):
         pass
@@ -61,7 +61,7 @@ class Query(RootOperation):
     _OP_TYPE = "query"
 
     def __init__(self, **objects):
-        self.objects: dict = objects
+        super().__init__(objects)
 
 
 class Mutation(RootOperation):
@@ -81,4 +81,4 @@ class Mutation(RootOperation):
     _OP_TYPE = "mutation"
 
     def __init__(self, **functions):
-        self.functions: dict = functions
+        super().__init__(functions)

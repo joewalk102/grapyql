@@ -2,8 +2,7 @@ from grapyql import GqlObject as O
 from grapyql import Field as F
 
 
-class TestGqlObjectFields:
-
+class TestGqlObject:
     @staticmethod
     def _make_test_obj():
         g_obj = O("user", filters={"active": True}).fields(
@@ -12,7 +11,7 @@ class TestGqlObjectFields:
             "l_name",
             O("invoice").fields(
                 "cost",
-                O("address", filters={"loc_type": "Primary"}).fields(
+                O("address", filters={"loc_type": "Primary", "country": "USA"}).fields(
                     "street",
                     "city",
                     "state",
@@ -27,6 +26,8 @@ class TestGqlObjectFields:
         )
         return g_obj
 
+
+class TestGqlObjectFields(TestGqlObject):
     def test_add_fields(self):
         """
         Test that fields were attached to the object and nested objects correctly.
@@ -71,3 +72,31 @@ class TestGqlObjectFields:
         assert hasattr(g_obj.invoice.address, "street")
 
         assert last_name.value == "Smith"  # Attached value is still on the object
+
+
+class TestGqlObjectToGql(TestGqlObject):
+
+    def test_to_gql(self):
+        g_obj = self._make_test_obj()
+        output = g_obj.to_gql()
+        assert output == (
+            "user(active: true){\n"
+            "  active\n"
+            "  f_name\n"
+            "  l_name\n"
+            "  invoice{\n"
+            "    cost\n"
+            '    address(loc_type: "Primary", country: "USA"){\n'
+            "      street\n"
+            "      city\n"
+            "      state\n"
+            "      country\n"
+            "      zip_code\n"
+            "    }\n"
+            "    items{\n"
+            "      display_name\n"
+            "      sku\n"
+            "    }\n"
+            "  }\n"
+            "}"
+        )

@@ -1,5 +1,6 @@
 from typing import Type
 
+from grapyql.const import INDENT
 
 __all__ = ["Field", "GqlObject", "Function"]
 
@@ -63,7 +64,7 @@ class GqlObject:
         self.obj_type: str | type | None = obj_type
         self.required: bool = required
         self.filters: dict = filters or dict()
-        self._fields: set = set()
+        self._fields: list = list()
 
     def __repr__(self):
         return f"GqlObj({self.obj_name})"
@@ -110,23 +111,17 @@ class GqlObject:
         Fields are added to the GQL object. This does not take out existing fields
         that were already on the GQL object.
         """
-        string_fields = {Field(f) for f in args if isinstance(f, str)}
-        field_objects = {f for f in args if isinstance(f, Field)}
-        gql_objects = {f for f in args if isinstance(f, GqlObject)}
-        self._fields.update(string_fields)
-        self._fields.update(field_objects)
-        self._fields.update(gql_objects)
+        for f in args:
+            field = f
+            if isinstance(f, str):
+                field = Field(f)
+            self._fields.append(field)
         return self
 
     def remove_fields(self, *args):
         """
         Removes fields from the GQL object.
         """
-        # TODO (jw): I don't like that this doesn't take advantage of set lookup, but
-        #  the object would have to be recreated with all fields identical (not possible)
-        #  to get the same hash or the hash/eq dunder methods would have to be changed to
-        #  be more tolerant so we could re-create the object with just the name and look
-        #  up the object from there. This is something to consider for the future.
         for f in args:
             for k in self._fields:
                 if k == f:
@@ -151,3 +146,49 @@ class GqlObject:
             raise KeyError(
                 f"Field '{field_name}' not found in object '{self.obj_name}'"
             )
+
+    @staticmethod
+    def _json_type(value):
+        """
+        Convert the value to json type for the GQL query.
+
+        Args:
+            value: Value to convert to json type.
+
+        Returns: JSON compatible value.
+        """
+        if isinstance(value, bool):
+            return "true" if value else "false"
+        if isinstance(value, int):
+            return str(value)
+        return f'"{value}"'
+
+    def to_gql(self, _curr_ind=0):
+        """
+        Translates the GQL object into a string.
+
+        Args:
+            _curr_ind: Internal use, tracks how much indent should be used.
+
+        Returns: Translated string.
+        """
+        output = f"{INDENT * _curr_ind}{self.obj_name}"
+        if self.filters:
+            output += "("
+            filters = list()
+            for k, v in self.filters.items():
+                filters.append(f"{k}: {self._json_type(v)}")
+            output += ", ".join(filters) + "){\n"
+        else:
+            output += "{\n"
+        for f in self._fields:
+            if isinstance(f, GqlObject):
+                obj_str = f.to_gql(_curr_ind=_curr_ind + 1)
+                output += obj_str
+            else:
+                output += (INDENT * (_curr_ind + 1)) + f.field_name + "\n"
+        output += INDENT * _curr_ind + "}"
+        if _curr_ind != 0:
+            output += "\n"
+            return output
+        return output
