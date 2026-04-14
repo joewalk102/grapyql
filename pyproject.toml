@@ -23,6 +23,8 @@ Repository = "https://github.com/joewalk102/grapyql"
 [project.optional-dependencies]
 dev = [
     "pytest==9.0.2",
+    "black~=22.0",
+    "flake8",
 ]
 
 [tool.setuptools.packages.find]
